@@ -1,6 +1,4 @@
 using System.Text;
-using System.Text.RegularExpressions;
-using AOC2023.Common;
 
 namespace AOC2023.Day1;
 
@@ -8,23 +6,24 @@ public class Solution
 {
     public static void Run()
     {
-        var totalSum = 0;
-
-        using (var reader = new StreamReader("day1/input.txt", Encoding.UTF8))
-        {
-            while (reader.ReadLine() is { } line)
-            {
-                var digits = new string(line.Where(char.IsDigit).ToArray());
-            
-                if (digits.Length > 0)
-                {
-                    var firstDigit = int.Parse(digits[0].ToString());
-                    var lastDigit = digits.Length > 1 ? int.Parse(digits[^1].ToString()) : firstDigit;
-                    totalSum += firstDigit * 10 + lastDigit;
-                }
-            }
-        }
-
-        Console.WriteLine($"Total Sum: {totalSum}");
+        var convert = new Dictionary<string, string>{
+            {"one", "1"},
+            {"two", "2"},
+            {"three", "3"},
+            {"four", "4"},
+            {"five", "5"},
+            {"six", "6"},
+            {"seven", "7"},
+            {"eight", "8"},
+            {"nine", "9"}
+        };
+                
+        var answer = File.ReadAllLines("day1/input.txt")
+            .Select(x => convert.Aggregate (x ,(a, b) => a.Replace(b.Key, $"{b.Key}{b.Value}{b.Key}")))
+            .Select(x => (x.First(char.IsDigit), x.Last(char.IsDigit)))
+            .Select(x => $"{x.Item1}{x.Item2}")
+            .Select(int.Parse)
+            .Sum();
+        Console.WriteLine(answer);
     }
 }
